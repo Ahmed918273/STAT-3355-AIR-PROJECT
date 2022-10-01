@@ -6,4 +6,4 @@ print("Test")
 
 print("Hello")
 
-print("Testing githubb")
+print("Testing github")
