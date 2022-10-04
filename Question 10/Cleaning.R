@@ -1,1 +1,0 @@
-# Cleaning for question 10
