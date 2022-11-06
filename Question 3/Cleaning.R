@@ -31,133 +31,27 @@ style <- geom_text(stat = "count", aes(label = ..count..),
                    position = position_dodge(width=0.9), 
                    vjust = -.25, size = 2)
 
-#Number of Injury level in each damage level 
-acft_events_merged_df %>%
-  filter(!is.na(damage)) %>% 
-  filter(!is.na(ev_highest_injury)) %>% 
-  ggplot(aes(x = damage, fill = ev_highest_injury)) +
-  geom_bar() +
-  labs(x = "Damage Level", y = "Count",
-       title = "Number of Injury level in each damage level") + 
-  guides(fill = guide_legend(title = "Injury Level"))
+#Q3
+#Is there a distinct injury type when an aircraft accident occurs? 
+#What are the most common and the least common injury types? 
 
-#Total number of injury by injury types
+#1.Total number of injury by injury level
+#2.Injury level by Aircraft category
+#3.Types of person injured
+#4.Ratio of person in injured by aircraft category
+#5.The change in the total injury over times by category
+
+#1.Total number of injury by types
 subset(acft_events_merged_df, !(ev_highest_injury %in% "UNKN")) %>%
   filter(!is.na(ev_highest_injury)) %>%
   ggplot(aes(ev_highest_injury, fill = ev_highest_injury)) + 
   geom_bar() + 
   ylim(0,50000) +
-  labs(title="Number of Injury",
-       x ="Injury Level", y = "Count") + style
+  labs(title="1.Total number of injury by types",
+       x ="Injury Level", y = "Count") + style +
+  guides(fill = guide_legend(title = "Injury Level"))
 
-#Injury level by Aircraft category
-subset(acft_events_merged_df, !(ev_highest_injury %in% "UNKN")) %>%
-  filter(!is.na(ev_highest_injury)) %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = ev_highest_injury)) + 
-  geom_bar(position = "dodge") + 
-  ylim(0,50000) +
-  labs(title="Injury level by aircraft type",
-       x ="Injury Level", y = "Count") + style
-
-#Types of person injured
-ggplot(injury_df, aes(inj_person_category, fill = inj_person_category)) + 
-  geom_bar() + style + 
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-
-
-#Ratio of person in injured by aircraft category
-subset(inj_acft_merged_df, acft_category %in% "AIR") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "BALL") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "BLIM") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "GLI") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "GYRO") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "HELI") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "PLFT") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "PPAR") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-subset(inj_acft_merged_df, acft_category %in% "RCKT") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "ULTR") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-subset(inj_acft_merged_df, acft_category %in% "WSFT") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(acft_category, fill = inj_person_category)) + 
-  geom_bar(position = "dodge")+
-  labs(title="Number of Injury by person category",
-       x ="Person Category", y = "Count") +
-  guides(fill = guide_legend(title = "Person Category"))
-
-#Total number of injury by aircraft category
+#2.Total number of the injury by category
 acft_events_merged_df %>%
   filter(!is.na(acft_category)) %>% 
   filter(!is.na(inj_tot_t)) %>% 
@@ -166,11 +60,40 @@ acft_events_merged_df %>%
   ggplot(aes(x = acft_category, y = inj_tot_t, fill = acft_category)) + 
   geom_col() +
   geom_text(aes(label = inj_tot_t), vjust = -0.5) +
-  labs(title="Total Injury by person category",
+  labs(title="2.Total Number of the Injury by Category",
        x ="Aircraft Category", y = "Total Injury") +
   guides(fill = guide_legend(title = "Aircraft Category"))
 
-#The change in the total injury over times by category
+#3.Injury level by Aircraft category
+subset(acft_events_merged_df, !(ev_highest_injury %in% "UNKN")) %>%
+  filter(!is.na(ev_highest_injury)) %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(acft_category, fill = ev_highest_injury)) + 
+  geom_bar(position = "dodge") +
+  facet_wrap(~acft_category, scale = "free") +
+  labs(title="3.Injury Level by Aircraft Category",
+       x ="Aircraft Category", y = "Count") + style +
+  guides(fill = guide_legend(title = "Injury Level"))
+
+#4.Types of person injured
+ggplot(injury_df, aes(inj_person_category, fill = inj_person_category)) + 
+  geom_bar() + style + 
+  labs(title="4.Types of Person Injured",
+       x ="Person Category", y = "Count") +
+  guides(fill = guide_legend(title = "Person Category"))
+
+#5.Ratio of person in injured by aircraft category
+inj_acft_merged_df%>% 
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(acft_category, fill = inj_person_category)) + 
+  geom_bar(position = "dodge") + style +
+  facet_wrap(~acft_category, scale = "free") + 
+  labs(title="5.Ratio of Person in Injured by Aircraft Category",
+       x ="Aircraft Category", y = "Count") +
+  guides(fill = guide_legend(title = "Person Category"))
+
+
+#6.The change in the total injury over times by category
 inj_year_acft_df <- data.frame(acft_events_merged_df$ev_year,
                                acft_events_merged_df$acft_category,
                                acft_events_merged_df$inj_tot_t)
@@ -200,31 +123,7 @@ p <- ggplot(data = sum_df, aes(x = year, y = total, color = catg)) +
 
 p + facet_wrap(~catg, scale = "free", 
                labeller = labeller(catg = labs)) +
-  labs(title = "The change in the total injury over times") + 
-  guides(fill = guide_legend(title = "Aircraft Type")) +
-  theme(strip.text.x = element_text(
-    size = 10, color = "black"
-  ), strip.background = element_rect(
-    color="gray", fill="lightgray", size=1.2))
-
-#The change in the total injury over times by category(without Rocket)
-sum_df2 <- subset(sum_df, !(catg %in% 'RCKT'))
-labs2 <- c("Airplane", "Balloon","Glider",
-           "Blimp","Gyrocraft","Helicopter",
-           "Powered Lift","Ultralight","Unknown",
-           "Powered parachute","Weight shift")
-names(labs2) <- c("AIR", "BALL","GLI",
-                  "BLIM","GYRO","HELI",
-                  "PLFT","ULTR","UNK",
-                  "PPAR","WSFT")
-p2 <- ggplot(data = sum_df2, aes(x = year, y = total, color = catg)) + 
-  geom_line(size=1.1) +
-  theme_light() +
-  xlim(1982, 2020)
-
-p2 + facet_wrap(~catg, scale = "free", 
-                labeller = labeller(catg = labs)) +
-  labs(title = "The change in the total injury over times") + 
+  labs(title = "6.The Change in the Total Injury over Times") + 
   guides(fill = guide_legend(title = "Aircraft Type")) +
   theme(strip.text.x = element_text(
     size = 10, color = "black"
