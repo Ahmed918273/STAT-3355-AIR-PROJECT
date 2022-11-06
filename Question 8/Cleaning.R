@@ -21,7 +21,12 @@ eventsq_df <- rbind(eventsq_pre_df, eventsq_post_df)
 #merge acft and event files
 acft_events_merged_df = merge(acft_df, events_df, by = "ev_id")
 
-#frequency of accident by phase of flight code
+#Q8
+#During what phase of flight do most accidents occur, 
+#and what are distinct attributes?
+
+#1.Cause of accident by aircraft type
+#2.Change in the cause of Accident(Airplane)
 acft_df %>%
   filter(!is.na(phase_flt_spec)) %>%
   ggplot(aes(y = fct_infreq(as.character(phase_flt_spec)))) + 
@@ -31,7 +36,6 @@ acft_df %>%
             position = position_dodge(width=0.9), 
             vjust = -.5, hjust = -0.3, size = 2)
 
-#creating a dataframe for frequency of accident by phase of flight(more splecific)
 ae_merged_df <- merge(acft_df, eventsq_df, by = "ev_id")
 aee_merged_df <- merge(ae_merged_df, events_df, by = "ev_id")
 esq_df <- subset(aee_merged_df, select = c(ev_id, ev_year, acft_category, Occurrence_Code))
@@ -117,163 +121,230 @@ occUp_df <- data.frame(Up, evUp)
 esq_df2 <- merge(esq_df, occLow_df, by.x = "digLow", by.y= "Low")
 esq_df3 <- merge(esq_df2, occUp_df, by.x = "digUp", by.y= "Up")
 
-#frequency of accident by phase of flight(more splecific)(occurrence code first three digit)
+#1.Cause of accident by aircraft type
 subset(esq_df3, acft_category %in% "AIR") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evUp, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) +
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Airplane)",
+       x = "Event Cause 1", y = "Count")
+
+subset(esq_df3, acft_category %in% "AIR") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evLow, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Airplane)",
+       x = "Event Cause 2", y = "Count")
 
 subset(esq_df3, acft_category %in% "BALL") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evUp, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Balloon)",
+       x = "Event Cause 1", y = "Count")
+
+subset(esq_df3, acft_category %in% "BALL") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evLow, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Balloon)",
+       x = "Event Cause 2", y = "Count")
 
 subset(esq_df3, acft_category %in% "BLIM") %>% 
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evUp, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "GLI") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "GYRO") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "HELI") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "PLFT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "PPAR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "RCKT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "ULTR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "WSFT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evUp, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-#frequency of accident by phase of flight(more splecific)(occurrence code last three digit)
-subset(esq_df3, acft_category %in% "AIR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evLow, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
-
-subset(esq_df3, acft_category %in% "BALL") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(evLow, fill = acft_category)) + 
-  geom_bar() +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Blimp)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "BLIM") %>% 
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Blimp)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "GLI") %>% 
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Glider)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "GLI") %>% 
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Glider)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "GYRO") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Gyrocraft)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "GYRO") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Gyrocraft)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "HELI") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Helicopter)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "HELI") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5))+ 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Helicopter)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "PLFT") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Powered Lift)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "PLFT") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Powered Lift)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "PPAR") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Powered Parachute)",
+       x = "Event Cause 1", y = "Count")
 
 subset(esq_df3, acft_category %in% "PPAR") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Powered Parachute)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "RCKT") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Rocket)",
+       x = "Event Cause 1", y = "Count") 
 
 subset(esq_df3, acft_category %in% "RCKT") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Rocket)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "ULTR") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Ultralight)",
+       x = "Event Cause 1", y = "Count") 
 
 subset(esq_df3, acft_category %in% "ULTR") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Ultralight)",
+       x = "Event Cause 2", y = "Count")
+
+subset(esq_df3, acft_category %in% "WSFT") %>%
+  filter(!is.na(acft_category)) %>%
+  ggplot(aes(evUp, fill = acft_category)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Weight shift)",
+       x = "Event Cause 1", y = "Count") 
 
 subset(esq_df3, acft_category %in% "WSFT") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(evLow, fill = acft_category)) + 
   geom_bar() +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
-  theme(axis.text.x = element_text(size = 5))
+  theme(axis.text.x = element_text(size = 5)) + 
+  guides(fill=guide_legend(title="Aircraft Category")) +
+  labs(title = "Cause of accident by aircraft type(Weight shift)",
+       x = "Event Cause 2", y = "Count")
 
-#frequency of accident by phase of flight over times(more splecific)(event code last three digit)
+
+
+#2.Change in the cause of Accident
 subset(esq_df3, acft_category %in% "AIR") %>%
   filter(!is.na(acft_category)) %>%
   ggplot(aes(x = ev_year,  color = evLow)) + 
@@ -283,7 +354,8 @@ subset(esq_df3, acft_category %in% "AIR") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Airplane)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "BALL") %>%
   filter(!is.na(acft_category)) %>%
@@ -294,7 +366,8 @@ subset(esq_df3, acft_category %in% "BALL") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Airplane)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "AIR") %>%
   filter(!is.na(acft_category)) %>%
@@ -305,7 +378,8 @@ subset(esq_df3, acft_category %in% "AIR") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Airplane)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "GLI") %>% 
   filter(!is.na(acft_category)) %>%
@@ -316,7 +390,8 @@ subset(esq_df3, acft_category %in% "GLI") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Glider)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "GYRO") %>%
   filter(!is.na(acft_category)) %>%
@@ -327,7 +402,8 @@ subset(esq_df3, acft_category %in% "GYRO") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Gyrocraft)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "HELI") %>%
   filter(!is.na(acft_category)) %>%
@@ -338,7 +414,8 @@ subset(esq_df3, acft_category %in% "HELI") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Helicopter)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "PLFT") %>%
   filter(!is.na(acft_category)) %>%
@@ -349,7 +426,8 @@ subset(esq_df3, acft_category %in% "PLFT") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Powered-Lift)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "PPAR") %>%
   filter(!is.na(acft_category)) %>%
@@ -360,7 +438,8 @@ subset(esq_df3, acft_category %in% "PPAR") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Powered parachute)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "RCKT") %>%
   filter(!is.na(acft_category)) %>%
@@ -371,7 +450,8 @@ subset(esq_df3, acft_category %in% "RCKT") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Rocket)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "ULTR") %>%
   filter(!is.na(acft_category)) %>%
@@ -382,7 +462,8 @@ subset(esq_df3, acft_category %in% "ULTR") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Ultralight)",
+       x = "Year", y = "Count")
 
 subset(esq_df3, acft_category %in% "WSFT") %>%
   filter(!is.na(acft_category)) %>%
@@ -393,127 +474,5 @@ subset(esq_df3, acft_category %in% "WSFT") %>%
         legend.text=element_text(size=5),
         legend.position="bottom") +
   guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-#frequency of accident by phase of flight over times(more splecific)(event code fisrt three digit)
-
-subset(esq_df3, acft_category %in% "AIR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "BALL") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "AIR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "GLI") %>% 
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "GYRO") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "HELI") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "PLFT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "PPAR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "RCKT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "ULTR") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
-
-subset(esq_df3, acft_category %in% "WSFT") %>%
-  filter(!is.na(acft_category)) %>%
-  ggplot(aes(x = ev_year,  color = evUp)) + 
-  geom_freqpoly(size=1.1) +
-  theme_light() +
-  theme(legend.key.size = unit(0.1, 'cm'),
-        legend.text=element_text(size=5),
-        legend.position="bottom") +
-  guides(fill=guide_legend(ncol = 2, title="Cause")) +
-  xlab("Year") + ylab("Count")
+  labs(title = "Change in the cause of Accident(Weight shift)",
+       x = "Year", y = "Count")
