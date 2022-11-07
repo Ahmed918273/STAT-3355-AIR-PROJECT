@@ -4,93 +4,121 @@
 library(tidyverse)
 library(readxl)
 library(stringr)
+library(dplyr)
 
 # import data set
-EventsPost2008 <- read_excel("2008_Present_Data/events.xlsx")
+events_post_2008 <- read_excel("2008_Present_Data/events.xlsx")
+
+eventspre2008 <- read_excel("Before_2008_Data/event.xlsx")
 
 # sub-setting data
-LongLatEventsPost2008 <-EventsPost2008 %>% select(ev_id, ev_date, longitude, latitude)
+long_lat_events_post_2008 <- events_post_2008 %>% select(ev_id, ev_date,
+longitude, latitude, ev_state)
+
+long_lat_events_pre2008 <- eventspre2008 %>% select(ev_id, ev_date,
+  longitude, latitude, ev_state)
 
 # Removing NA values
-LongLatEventsPost2008 <- na.omit(LongLatEventsPost2008)
+long_lat_events_post_2008 <- na.omit(long_lat_events_post_2008)
+long_lat_events_pre2008 <- na.omit(long_lat_events_pre2008)
 
-# Creating a program that converts co-ordinates from degrees minutes seconds to
-# decimal co-ordinates
-for (i in 1:nrow(LongLatEventsPost2008)) {
-  
+# Merging data sets
+long_lat_events_all <- rbind(long_lat_events_pre2008,
+  long_lat_events_post_2008)
+
+# Creating a program that converts co-ordinates from
+# degrees minutes seconds to decimal co-ordinates
+
+for (i in 1:nrow(long_lat_events_all)) { # nolint
   # Longitude
-  
   # Finding the degree co-ordinate
-  degreesLong <- as.numeric(substring(LongLatEventsPost2008$longitude[i], nchar(LongLatEventsPost2008$longitude[i]) - 7, nchar(LongLatEventsPost2008$longitude[i]) - 5))
+  degrees_long <- as.numeric(substring(long_lat_events_all$longitude[i],
+    nchar(long_lat_events_all$longitude[i]) - 7,
+    nchar(long_lat_events_all$longitude[i]) - 5))
   # Finding the minute co-ordinate
-  minutesLong <- as.numeric(substring(LongLatEventsPost2008$longitude[i], nchar(LongLatEventsPost2008$longitude[i]) - 4, nchar(LongLatEventsPost2008$longitude[i]) - 3))
+  minutes_long <- as.numeric(substring(long_lat_events_all$longitude[i],
+    nchar(long_lat_events_all$longitude[i]) - 4,
+    nchar(long_lat_events_all$longitude[i]) - 3))
   # Finding the second co-ordinate
-  secondsLong <- as.numeric(substring(LongLatEventsPost2008$longitude[i], nchar(LongLatEventsPost2008$longitude[i]) - 2, nchar(LongLatEventsPost2008$longitude[i]) - 1))
-  
+  seconds_long <- as.numeric(substring(long_lat_events_all$longitude[i],
+    nchar(long_lat_events_all$longitude[i]) - 2,
+    nchar(long_lat_events_all$longitude[i]) - 1))
   # Finding whether it is W or E
-  eastOrwestLong <- substring(LongLatEventsPost2008$longitude[i], nchar(LongLatEventsPost2008$longitude[i]) - 0, nchar(LongLatEventsPost2008$longitude[i]) - 0)
-  
+  east_or_west_long <- substring(long_lat_events_all$longitude[i],
+    nchar(long_lat_events_all$longitude[i]) - 0,
+    nchar(long_lat_events_all$longitude[i]) - 0)
   # If the co-ordinate is on the W then it is negative otherwise it is positive
-  if (eastOrwestLong == "W"){
-    LongLatEventsPost2008$longitude[i] <- round(-1 * (degreesLong + (minutesLong/60) + (secondsLong/3600)), digits = 3)
+  if (east_or_west_long == "W") {
+    long_lat_events_all$longitude[i] <- round(-1 * (degrees_long +
+    (minutes_long / 60) + (seconds_long / 3600)), digits = 3)
+  } else {
+    long_lat_events_all$longitude[i] <- round(degrees_long +
+    (minutes_long / 60) + (seconds_long / 3600), digits = 3)
   }
-  else {
-    LongLatEventsPost2008$longitude[i] <- round(degreesLong + (minutesLong/60) + (secondsLong/3600), digits = 3)
-  }
-  
   # Latitude
-  
   # Finding the degree co-ordinate
-  degreesLat <- as.numeric(substring(LongLatEventsPost2008$latitude[i], nchar(LongLatEventsPost2008$latitude[i]) - 6, nchar(LongLatEventsPost2008$latitude[i]) - 5))
+  degrees_lat <- as.numeric(substring(long_lat_events_all$latitude[i],
+    nchar(long_lat_events_all$latitude[i]) - 6,
+    nchar(long_lat_events_all$latitude[i]) - 5))
   # Finding the minute co-ordinate
-  minutesLat <- as.numeric(substring(LongLatEventsPost2008$latitude[i], nchar(LongLatEventsPost2008$latitude[i]) - 4, nchar(LongLatEventsPost2008$latitude[i]) - 3))
+  minutes_lat <- as.numeric(substring(long_lat_events_all$latitude[i],
+    nchar(long_lat_events_all$latitude[i]) - 4,
+    nchar(long_lat_events_all$latitude[i]) - 3))
   # Finding the second co-ordinate
-  secondsLat <- as.numeric(substring(LongLatEventsPost2008$latitude[i], nchar(LongLatEventsPost2008$latitude[i]) - 2, nchar(LongLatEventsPost2008$latitude[i]) - 1))
-  
+  seconds_lat <- as.numeric(substring(long_lat_events_all$latitude[i],
+    nchar(long_lat_events_all$latitude[i]) - 2,
+    nchar(long_lat_events_all$latitude[i]) - 1))
   # Finding whether it is N or S
-  eastOrwestLat <- substring(LongLatEventsPost2008$latitude[i], nchar(LongLatEventsPost2008$latitude[i]) - 0, nchar(LongLatEventsPost2008$latitude[i]) - 0)
-  
+  east_or_west_lat <- substring(long_lat_events_all$latitude[i],
+    nchar(long_lat_events_all$latitude[i]) - 0,
+    nchar(long_lat_events_all$latitude[i]) - 0)
   # If the co-ordinate is on the S then it is negative otherwise it is positive
-  if (eastOrwestLong == "S") {
-    
-    LongLatEventsPost2008$latitude[i] <- round(degreesLat + (minutesLat/60) + (secondsLat/3600), digits = 3)  
-    }
-  else {
-    
-    LongLatEventsPost2008$latitude[i] <- round(degreesLat + (minutesLat/60) + (secondsLat/3600), digits = 3)  
+  if (east_or_west_long == "S") {
+    #
+    long_lat_events_all$latitude[i] <- round(degrees_lat +
+    (minutes_lat / 60) + (seconds_lat / 3600), digits = 3)
+    } else {
+    #
+    long_lat_events_all$latitude[i] <- round(degrees_lat +
+    (minutes_lat / 60) + (seconds_lat / 3600), digits = 3)
     }
 }
 
+# Clearing useless variables from environment
+rm(list = c("degrees_lat", "degrees_long",
+"east_or_west_lat", "east_or_west_long", "i",
+"minutes_lat", "minutes_long", "seconds_lat", "seconds_long"))
 
-rm(list = c('degreesLat', 'degreesLong', 'eastOrwestLat', 'eastOrwestLong', 'i',
-            'minutesLat', 'minutesLong', 'secondsLat', 'secondsLong'))
-
+# Removing NA values (data that cannot be propperly converted)
+long_lat_events_all <- na.omit(long_lat_events_all)
 
 # Duplicating data set
-AccidentLongLat <- LongLatEventsPost2008
-AccidentLongLat[] <- NA
+accident_long_lat <- long_lat_events_all
+accident_long_lat[] <- NA
 
-# Filtering LongLatEventsPost2008 to only be mainland USA
+# Filtering long_lat_events_all to only be mainland USA
 
-for (i in 1:nrow(LongLatEventsPost2008)) {
-  
-  longitude <- as.numeric(LongLatEventsPost2008$longitude[i])
-  latitude <- as.numeric(LongLatEventsPost2008$latitude[i])
-  
+for (i in 1:nrow(long_lat_events_all)) { # nolint
+  #
+  longitude <- as.numeric(long_lat_events_all$longitude[i])
+  latitude <- as.numeric(long_lat_events_all$latitude[i])
+  #
   if (-65 > longitude && longitude > -130) {
-    
+    #
     if (50 > latitude && latitude > 25) {
-      
-      AccidentLongLat[i,]  <- LongLatEventsPost2008[i,]
+      #
+      accident_long_lat[i, ]  <- long_lat_events_all[i, ]
     }
   }
 }
 
-AccidentLongLat <- na.omit(AccidentLongLat)
+accident_long_lat <- na.omit(accident_long_lat)
 
-AccidentLongLat$longitude <- as.numeric(AccidentLongLat$longitude)
-AccidentLongLat$latitude <- as.numeric(AccidentLongLat$latitude)
+# Making long and lat numeric
+accident_long_lat$longitude <- as.numeric(accident_long_lat$longitude)
+accident_long_lat$latitude <- as.numeric(accident_long_lat$latitude)
 
-rm(list = c('i', 'longitude', 'latitude'))
+# Removing rows before the year 2000
+accident_long_lat <- accident_long_lat[-c(1:19), ]
 
-
+rm(list = c("i", "longitude", "latitude"))
