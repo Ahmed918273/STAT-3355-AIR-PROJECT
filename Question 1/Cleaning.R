@@ -122,3 +122,7 @@ accident_long_lat$latitude <- as.numeric(accident_long_lat$latitude)
 accident_long_lat <- accident_long_lat[-c(1:19), ]
 
 rm(list = c("i", "longitude", "latitude"))
+
+
+# Need to import it the way because of an error
+john <- read.csv("Data/table_Full_Data_data.csv", fileEncoding = "UTF-16LE")
