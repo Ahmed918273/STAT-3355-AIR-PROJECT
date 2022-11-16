@@ -1,8 +1,3 @@
-# Cleaning for question 6
-# Is there a correlation between the aircraft age and the rate of accidents
-# occurring? If so, can we predict the increased chance rate of an aircraft
-# depending on the age?
-
 library(tidyverse)
 library(readxl)
 

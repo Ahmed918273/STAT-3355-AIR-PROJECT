@@ -1,5 +1,4 @@
 library(gapminder)
-
 library(ggplot2)
 library(gganimate)
 
@@ -21,11 +20,6 @@ scatter_plot_all <- scatter_plot_all + geom_jitter()
 # Create a line of best fit for each aircraft make
 scatter_plot_all <- scatter_plot_all + geom_smooth(
     method = "loess", color = "black")
-
-
-
-
-
 
 # Create a scatter plot of ev_date as the x-axis and accident_age as the y-axis
 # using the cessna_accidents data frame
@@ -50,10 +44,6 @@ scatter_plot_cessna <- scatter_plot_cessna + geom_smooth(
 
 # Set the y limit to be 100
 scatter_plot_cessna <- scatter_plot_cessna + ylim(0, 80)
-
-
-
-
 
 # Create a scatter plot of ev_date as the x-axis and accident_age as the y-axis
 # using the cessna_accidents_subs data frame

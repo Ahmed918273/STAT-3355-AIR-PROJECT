@@ -181,7 +181,6 @@ acft_df %>%
   guides(fill = guide_legend(title = "Damage"))+ 
   facet_wrap(~acft_category, scale = "free")
 
-
 #13.Type of flight by aircraft category
 acft_engines_merged_df %>% 
   filter(!is.na(acft_category)) %>%
